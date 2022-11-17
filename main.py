@@ -21,15 +21,15 @@ class Main:
         return
 
     def db_init(self):
-        pt = PeopleTable()
+        pt = PeopleTable()   # инициализация экземпляров классов PeopleTable, PhonesTable, DocsTable
         pht = PhonesTable()
         dt = DocsTable()
-        pt.create()
+        pt.create()  # создание таблиц
         pht.create()
         dt.create()
         return
 
-    def db_insert_somethings(self):
+    def db_insert_somethings(self):   # функция для включения тестовых значений в таблицу
         pt = PeopleTable()
         pht = PhonesTable()
         dt = DocsTable()
@@ -43,39 +43,55 @@ class Main:
         dt.insert_one(["type2", "series2", "number2", "source2", "issue_date2"])
         dt.insert_one(["type3", "series3", "number3", "source3", "issue_date3"])
 
-    def db_drop(self):
+    def db_drop(self):   # функция для удаления таблиц
         pht = PhonesTable()
         pt = PeopleTable()
+        dt = DocsTable()
         pht.drop()
+        dt.drop()
         pt.drop()
         return
+    
+    def sql_check(self, s):   # функция для проверки строки на наличие в ней операторов SQL
+        s = str(s)
+        s.lower()
+        for j in ["select", "union", "order by", "=", "drop", "delete", "sleep", "update", "alter", "modify", ";"]:
+            if j in s:
+                return True
+            else:
+                return False
 
-    def show_main_menu(self):
+    def show_main_menu(self):   # показ основого меню
         menu = """Добро пожаловать! 
 Основное меню (выберите цифру в соответствии с необходимым действием): 
     1 - просмотр людей;
     2 - сброс и инициализация таблиц;
+    8 - постраничный просмотр;
+    10 - просмотр;
     9 - выход."""
         print(menu)
         return
 
-    def read_next_step(self):
-        return input("=> ").strip()
+    def read_next_step(self):   # функция считывания следующего шага, внутри функции реализована проверка на наличие SQL-инъекций
+        k = input("=> ").strip()
+        if self.sql_check(k):
+            return
+        return k
 
-    def after_main_menu(self, next_step):
+    def after_main_menu(self, next_step):   # функция, определяющая поведение программы после ввода цифры пользователем
         if next_step == "2":
             self.db_drop()
             self.db_init()
             self.db_insert_somethings()
             print("Таблицы созданы заново!")
             return "0"
-        elif next_step != "1" and next_step != "9":
+        elif next_step not in ["1", "9", "8", "10"]:
             print("Выбрано неверное число! Повторите ввод!")
             return "0"
         else:
             return next_step
 
-    def show_people(self):
+    def show_people(self):   # функция показа людей
         self.person_id = -1
         menu = """Просмотр списка людей!
 №\tФамилия\tИмя\tОтчество"""
