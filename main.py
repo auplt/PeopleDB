@@ -23,19 +23,25 @@ class Main:
     def db_init(self):
         pt = PeopleTable()
         pht = PhonesTable()
+        dt = DocsTable()
         pt.create()
         pht.create()
+        dt.create()
         return
 
     def db_insert_somethings(self):
         pt = PeopleTable()
         pht = PhonesTable()
+        dt = DocsTable()
         pt.insert_one(["Test", "Test", "Test"])
         pt.insert_one(["Test2", "Test2", "Test2"])
         pt.insert_one(["Test3", "Test3", "Test3"])
         pht.insert_one([1, "123"])
         pht.insert_one([2, "123"])
         pht.insert_one([3, "123"])
+        dt.insert_one(["type1", "series1", "number1", "source1", "issue_date1"])
+        dt.insert_one(["type2", "series2", "number2", "source2", "issue_date2"])
+        dt.insert_one(["type3", "series3", "number3", "source3", "issue_date3"])
 
     def db_drop(self):
         pht = PhonesTable()
