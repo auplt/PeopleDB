@@ -46,7 +46,7 @@ class DbTable:
         return
 
     def insert_one(self, vals):
-        print(self.column_names_without_id())
+        # print(self.column_names_without_id())
         # for i in range(0, len(vals)):
         #     if type(vals[i]) == str:
         #         vals[i] = "'" + vals[i] + "'"
@@ -56,7 +56,7 @@ class DbTable:
         # sql += ", ".join(self.column_names_without_id()) + ") VALUES("
         # sql += ", ".join(vals) + ")"
 
-        print(vals)
+        # print(vals)
         vals = tuple(vals)
         sql = "INSERT INTO " + self.table_name() + "("
         sql += ", ".join(self.column_names_without_id()) + ") VALUES( "
@@ -64,11 +64,11 @@ class DbTable:
         sql = sql.removesuffix(', ')
         sql += ')'
 
-        print(self.column_names_without_id())
+        # print(self.column_names_without_id())
         cur = self.dbconn.conn.cursor()
         # cur.execute(sql)
         cur.execute(sql, vals)
-        print(sql)
+        # print(sql)
         self.dbconn.conn.commit()
         return
 
@@ -92,7 +92,7 @@ class DbTable:
         sql = "SELECT * FROM " + self.table_name()
         sql += " ORDER BY "
         sql += ", ".join(self.primary_key())
-        print(sql)
+        # print(sql)
         cur = self.dbconn.conn.cursor()
         cur.execute(sql)
         return cur.fetchall()

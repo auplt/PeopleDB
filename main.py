@@ -2,6 +2,7 @@ import sys
 
 from tables.people_table import *
 from tables.phones_table import *
+from tables.docs_table import *
 
 sys.path.append('tables')
 
@@ -23,6 +24,7 @@ class Main:
     def db_init(self):
         pt = PeopleTable()
         pht = PhonesTable()
+        dt = DocsTable()
         pt.create()
         pht.create()
         return
@@ -30,12 +32,17 @@ class Main:
     def db_insert_somethings(self):
         pt = PeopleTable()
         pht = PhonesTable()
+        dt = DocsTable()
         pt.insert_one(["Test", "Test", "Test"])
         pt.insert_one(["Test2", "Test2", "Test2"])
         pt.insert_one(["Test3", "Test3", "Test3"])
         pht.insert_one([1, "123"])
         pht.insert_one([2, "123"])
         pht.insert_one([3, "123"])
+        dt.insert_one([1, "Pass1", "s1", "n1", "d1", "date1"])
+        dt.insert_one([3, "Pass3", "s3", "n3", "d3", "date3"])
+        dt.insert_one([2, "Pass2", "s2", "n1", "d1", "date2"])
+
 
     def db_drop(self):
         pht = PhonesTable()
