@@ -2,6 +2,7 @@ import sys
 
 from tables.people_table import *
 from tables.phones_table import *
+from tables.docs_table import *
 
 sys.path.append('tables')
 
@@ -23,26 +24,34 @@ class Main:
     def db_init(self):
         pt = PeopleTable()
         pht = PhonesTable()
+        dt = DocsTable()
         pt.create()
         pht.create()
+        dt.create()
         return
 
     def db_insert_somethings(self):
         pt = PeopleTable()
         pht = PhonesTable()
+        dt = DocsTable()
         pt.insert_one(["Test", "Test", "Test"])
         pt.insert_one(["Test2", "Test2", "Test2"])
         pt.insert_one(["Test3", "Test3", "Test3"])
         pht.insert_one([1, "123"])
         pht.insert_one([2, "123"])
         pht.insert_one([3, "123"])
+        dt.insert_one([1, "pass", "234", "456", "dep_1", "01.01.20"])
+        dt.insert_one([2, "pass", "678", "890", "dep_1", "09.12.10"])
+        dt.insert_one([3, "snils", "123", "345", "dep_2", "12.12.12"])
 
 
     def db_drop(self):
         pht = PhonesTable()
         pt = PeopleTable()
+        dt = DocsTable()
         pht.drop()
         pt.drop()
+        dt.drop()
         return
 
     def show_main_menu(self):
@@ -83,6 +92,7 @@ class Main:
     3 - добавление нового человека;
     4 - удаление человека;
     5 - просмотр телефонов человека;
+    15 - просмотр документов;
     9 - выход."""
         print(menu)
         return
@@ -101,6 +111,14 @@ class Main:
                 # DONE!!! # print("Пока не реализовано!") # Переписать поиск
                 self.delete_phone()
                 next_step = "5"
+            elif next_step == "7":
+                # DONE!!! # print("Пока не реализовано!") # Переписать поиск
+                self.delete_phone()
+                next_step = "5"
+            elif next_step == "15":
+                # DONE!!! # print("Пока не реализовано!") # Переписать поиск
+                print(DocsTable().all_by_person_id(2))
+                return "1"
             elif next_step == "5":
                 next_step = self.show_phones_by_people()
             elif next_step != "0" and next_step != "9" and next_step != "3":

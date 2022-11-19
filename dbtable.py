@@ -42,6 +42,7 @@ class DbTable:
         sql = "DROP TABLE IF EXISTS " + self.table_name()
         cur = self.dbconn.conn.cursor()
         cur.execute(sql)
+        print(sql)
         self.dbconn.conn.commit()
         return
 
