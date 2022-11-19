@@ -2,7 +2,6 @@ import sys
 
 from tables.people_table import *
 from tables.phones_table import *
-from tables.docs_table import *
 
 sys.path.append('tables')
 
@@ -24,34 +23,26 @@ class Main:
     def db_init(self):
         pt = PeopleTable()
         pht = PhonesTable()
-        dt = DocsTable()
         pt.create()
         pht.create()
-        dt.create()
         return
 
     def db_insert_somethings(self):
         pt = PeopleTable()
         pht = PhonesTable()
-        dt = DocsTable()
         pt.insert_one(["Test", "Test", "Test"])
         pt.insert_one(["Test2", "Test2", "Test2"])
         pt.insert_one(["Test3", "Test3", "Test3"])
         pht.insert_one([1, "123"])
         pht.insert_one([2, "123"])
         pht.insert_one([3, "123"])
-        dt.insert_one([1, "Pass1", "s1", "n1", "d1", "date1"])
-        dt.insert_one([3, "Pass3", "s3", "n3", "d3", "date3"])
-        dt.insert_one([2, "Pass2", "s2", "n1", "d1", "date2"])
 
 
     def db_drop(self):
         pht = PhonesTable()
         pt = PeopleTable()
-        dt = DocsTable()
         pht.drop()
         pt.drop()
-        dt.drop()
         return
 
     def show_main_menu(self):
@@ -86,13 +77,12 @@ class Main:
         print(menu)
         lst = PeopleTable().all()
         for i in lst:
-            print(str(i[1]) + "\t" + str(i[2]) + "\t" + str(i[0]) + "\t" + str(i[3]))
+            print(str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\t" + str(i[3]))
         menu = """Дальнейшие операции: 
     0 - возврат в главное меню;
     3 - добавление нового человека;
     4 - удаление человека;
     5 - просмотр телефонов человека;
-    15 - просмотр доукментов;
     9 - выход."""
         print(menu)
         return
@@ -113,11 +103,6 @@ class Main:
                 next_step = "5"
             elif next_step == "5":
                 next_step = self.show_phones_by_people()
-            elif next_step == "15":
-                # DONE!!! # print("Пока не реализовано!") # Ограничесние целостности
-                print(DocsTable().all_by_person_id(2))
-                # print("555555")
-                next_step = "1"
             elif next_step != "0" and next_step != "9" and next_step != "3":
                 print("Выбрано неверное число! Повторите ввод!")
                 return "1"
@@ -177,10 +162,10 @@ class Main:
                 if not person:
                     print("Введено число, неудовлетворяющее количеству людей!")
                 else:
-                    self.person_id = int(person[1])
+                    self.person_id = int(person[0])
                     self.person_obj = person
                     break
-        print("Выбран человек: " + self.person_obj[2] + " " + self.person_obj[0] + " " + self.person_obj[3])
+        print("Выбран человек: " + self.person_obj[1] + " " + self.person_obj[2] + " " + self.person_obj[3])
         print("Телефоны: ")
         lst = PhonesTable().all_by_person_id(self.person_id)
         for i in lst:

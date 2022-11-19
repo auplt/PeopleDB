@@ -14,7 +14,7 @@ class DbTable:
         return {"test": ["integer", "PRIMARY KEY"]}
 
     def column_names(self):
-        return sorted(self.columns().keys(), key=lambda x: x)
+        return self.columns().keys()
 
     def primary_key(self):
         return ['id']
