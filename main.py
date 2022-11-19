@@ -103,6 +103,9 @@ class Main:
                 next_step = "5"
             elif next_step == "5":
                 next_step = self.show_phones_by_people()
+            elif next_step == "12":
+                self.update_phone()
+                next_step = "5"
             elif next_step != "0" and next_step != "9" and next_step != "3":
                 print("Выбрано неверное число! Повторите ввод!")
                 return "1"
@@ -175,6 +178,7 @@ class Main:
     1 - возврат в просмотр людей;
     6 - добавление нового телефона;
     7 - удаление телефона;
+    12 - изменение телефона;
     9 - выход."""
         print(menu)
         return self.read_next_step()
@@ -252,22 +256,85 @@ class Main:
         pht.insert_one(data)
         return
 
-    def delete_phone(self):
-        num = input("Введите номер телефона, который хотите удалить (0 - отмена): ")
-        while len(num.strip()) == 0 or PhonesTable().check_number(self.person_id, num) == False:
-            if len(num.strip()) == 0:
-                num = input(
+
+    def search_phone(self):
+        tel = input("Введите номер телефона, который хотите удалить (0 - отмена): ")
+        while len(tel.strip()) == 0 or PhonesTable().check_number(self.person_id, tel) == False:
+            if len(tel.strip()) == 0:
+                tel = input(
                     "Пустая строка. Повторите ввод! Повторите ввод номера телефона, который хотите удалить (0 - отмена): ")
-                if num == "0":
+                if tel == "0":
                     return "1"
-            if PhonesTable().check_number(self.person_id, num) == False:
-                num = input(
-                    f'Номера {num} не существует! Повторите ввод номера телефона, который хотите удалить (0 - отмена): ')
-                if num == "0":
+            if PhonesTable().check_number(self.person_id, tel) == False:
+                if tel == "0":
                     return "1"
-        print(self.person_id, num)
+                tel = input(
+                    f'Номера {tel} не существует! Повторите ввод номера телефона, который хотите удалить (0 - отмена): ')
+                # if tel == "0":
+                #     return "1"
+        print(self.person_id, tel)
+        # delete_phone(tel)
+        return tel
+
+    def delete_phone(self):
+        num = self.search_phone()
         pht = PhonesTable()
         pht.delete_phone(num)
+        return
+
+    # def update_phone(self):
+    #     tel = self.search_phone()
+    #     num = input("Введите номер телефона, который хотите удалить (0 - отмена): ")
+    #     while len(num.strip()) == 0 or PhonesTable().check_number(self.person_id, num) == False:
+    #         if len(num.strip()) == 0:
+    #             num = input(
+    #                 "Пустая строка. Повторите ввод! Повторите ввод номера телефона, который хотите удалить (0 - отмена): ")
+    #             if num == "0":
+    #                 return "1"
+    #         if PhonesTable().check_number(self.person_id, num) == False:
+    #             num = input(
+    #                 f'Номера {num} не существует! Повторите ввод номера телефона, который хотите удалить (0 - отмена): ')
+    #             if num == "0":
+    #                 return "1"
+    #     pht = PhonesTable()
+    #     pht.update_phone(tel, num)
+
+    def update_phone(self):
+        # Не реализована проверка на максимальную длину строк. Нужно доделать самостоятельно!
+
+        tel = self.search_phone()
+
+        data = ''
+        # data.append(self.person_id)
+        tel_new = input("Введите телефон, который хотите добавить (1 - отмена): ").strip()
+        if tel_new == "1":
+            return
+        while (len(tel_new.strip()) == 0) or (len(tel_new.strip()) > 12) or (
+                (not (tel_new[1:].isdigit() and tel_new[0] == '+') and not (
+                        tel_new.isdigit())) == True) or tel_new == tel:
+            if len(tel_new.strip()) == 0:
+                tel_new = input(
+                    "Номер телефона не может быть пустым! Введите номер телефона заново (1 - отмена): ").strip()
+                if tel_new == "1":
+                    return
+            elif len(tel_new.strip()) > 12:
+                tel_new = input(
+                    "Номер телефона не может быть длинее 12 цифр! Введите номер телефона заново (1 - отмена): ").strip()
+                if tel_new == "1":
+                    return
+            elif (not (tel_new[1:].isdigit() and tel_new[0] == '+') and not (tel_new.isdigit())) == True:
+                tel_new = input(
+                    "Номер телефона должен состоять только из цифр или знака + и цифр! Введите номер телефона заново (1 - отмена): ").strip()
+                if tel_new == "1":
+                    return
+            elif tel_new == tel:
+                tel_new = input(
+                    f'Номер {tel_new} совпадает с добавляемым! Повторите ввод номера телефона, который хотите добавить (0 - отмена): ').strip()
+                if tel_new == "0":
+                    return "1"
+        print(data, tel)
+        pht = PhonesTable()
+        pht.update_phone(tel, tel_new)
         return
 
 

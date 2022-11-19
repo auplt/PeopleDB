@@ -14,7 +14,7 @@ class PeopleTable(DbTable):
     def find_by_position(self, num):
         sql = "SELECT * FROM " + self.table_name()
         sql += " ORDER BY "
-        sql += ", ".join(self.primary_key())  # join элементов в [] через ', ' ex.: aa, bb, ss
+        sql += ", ".join(self.primary_key())  # join string split by ', ', '[aa, bb, ss] ex.: aa, bb, ss
         sql += " LIMIT 1 OFFSET :offset"
         cur = self.dbconn.conn.cursor()
         cur.execute(sql, {"offset": num - 1})
