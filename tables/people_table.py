@@ -25,7 +25,7 @@ class PeopleTable(DbTable):
         sql = "DELETE FROM " + self.table_name()
         sql += " WHERE id=:del"
         cur = self.dbconn.conn.cursor()
-        cur.execute(sql, {"del": pid})
+        cur.execute(sql, {"del": int(pid)})
         # print(sql)
         self.dbconn.conn.commit()
         return

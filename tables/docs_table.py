@@ -24,7 +24,9 @@ class DocsTable(DbTable):
         sql += " WHERE person_id = :id"
         sql += " ORDER BY "
         sql += ", ".join(self.primary_key())
+        print(sql)
         cur = self.dbconn.conn.cursor()
-        cur.execute(sql, str(pid))
+        # cur.execute(sql, str(pid))
+        print(cur.execute("SELECT * FROM prj_docs WHERE person_id=:id", {'id': int(2)}))
         return cur.fetchall()
 

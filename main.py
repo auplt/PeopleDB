@@ -27,6 +27,7 @@ class Main:
         dt = DocsTable()
         pt.create()
         pht.create()
+        dt.create()
         return
 
     def db_insert_somethings(self):
@@ -47,8 +48,10 @@ class Main:
     def db_drop(self):
         pht = PhonesTable()
         pt = PeopleTable()
+        dt = DocsTable()
         pht.drop()
         pt.drop()
+        dt.drop()
         return
 
     def show_main_menu(self):
@@ -89,6 +92,7 @@ class Main:
     3 - добавление нового человека;
     4 - удаление человека;
     5 - просмотр телефонов человека;
+    15 - просмотр доукментов;
     9 - выход."""
         print(menu)
         return
@@ -109,6 +113,11 @@ class Main:
                 next_step = "5"
             elif next_step == "5":
                 next_step = self.show_phones_by_people()
+            elif next_step == "15":
+                # DONE!!! # print("Пока не реализовано!") # Ограничесние целостности
+                print(DocsTable().all_by_person_id(2))
+                # print("555555")
+                next_step = "1"
             elif next_step != "0" and next_step != "9" and next_step != "3":
                 print("Выбрано неверное число! Повторите ввод!")
                 return "1"
