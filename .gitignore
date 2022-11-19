@@ -130,6 +130,3 @@ dmypy.json
 
 # PyCharm files
 .idea/
-
-#DB file
-project.db
