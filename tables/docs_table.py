@@ -29,4 +29,3 @@ class DocsTable(DbTable):
         # cur.execute(sql, str(pid))
         print(cur.execute("SELECT * FROM prj_docs WHERE person_id=:id", {'id': int(2)}))
         return cur.fetchall()
-
