@@ -74,6 +74,8 @@ class DbTable:
         self.dbconn.conn.commit()
         return
 
+
+
     def first(self):
         sql = "SELECT * FROM " + self.table_name()
         sql += " ORDER BY "

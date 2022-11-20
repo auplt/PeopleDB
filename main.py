@@ -82,6 +82,7 @@ class Main:
     0 - возврат в главное меню;
     3 - добавление нового человека;
     4 - удаление человека;
+    14 - изменение информации о человеке;
     5 - просмотр телефонов человека;
     9 - выход."""
         print(menu)
@@ -101,12 +102,13 @@ class Main:
                 # DONE!!! # print("Пока не реализовано!") # Переписать поиск
                 self.delete_phone()
                 next_step = "5"
-            elif next_step == "5":
-                next_step = self.show_phones_by_people()
             elif next_step == "12":
                 self.update_phone()
                 next_step = "5"
-            elif next_step != "0" and next_step != "9" and next_step != "3":
+            elif next_step == "5":
+                next_step = self.show_phones_by_people()
+
+            elif next_step != "0" and next_step != "9" and next_step != "3" and next_step != "14":
                 print("Выбрано неверное число! Повторите ввод!")
                 return "1"
             else:
@@ -156,6 +158,8 @@ class Main:
         if self.person_id == -1:
             while True:
                 num = input("Укажите номер строки, в которой записана интересующая Вас персона (0 - отмена): ")
+                if num == "0":
+                    return "1"
                 while len(num.strip()) == 0:
                     num = input(
                         "Пустая строка. Повторите ввод! Укажите номер строки, в которой записана интересующая Вас персона (0 - отмена): ")
@@ -202,23 +206,97 @@ class Main:
             elif current_menu == "3":
                 self.show_add_person()
                 current_menu = "1"
+            elif current_menu == "14":
+                self.update_person()
+                current_menu = "1"
         print("До свидания!")
         return
 
-    def delete_person(self):
-        num = input("Укажите ID пользователья, которого вы хотите удалить (0 - отмена): ")
+    def search_person_by_id(self, title):
+        num = input(f"Укажите ID пользователя, {title} (0 - отмена): ")
+        if num == "0":
+            return "-1"
         while len(num.strip()) == 0:
             num = input(
                 "Пустая строка. Повторите ввод! Укажите ID пользователья, которого вы хотите удалить (0 - отмена): ")
             if num == "0":
-                return "1"
-            person = PeopleTable().find_by_position(int(num))
-            if not person:
-                print("Введено число, неудовлетворяющее количеству людей!")
+                return "-1"
+        person = PeopleTable().find_by_id(int(num))
+        print(person)
+        if not person:
+            print("Введен ID, неудовлетворяющий ниодному человеку!")
+            return "-1"
+        return num
+    def delete_person(self):
+        title = 'которого вы хотите удалить'
+        num = self.search_person_by_id(title)
+        if num=="-1":
+            return "1"
         pt = PeopleTable()
         pht = PhonesTable()
         pht.delete_phones_by_person(int(num))
         pt.delete(int(num))
+
+    def update_person(self):
+        title = 'информацию о котором вы хотите изменить'
+        num = self.search_person_by_id(title)
+        print(num)
+        if num=="-1":
+            return "1"
+        # Не реализована проверка на максимальную длину строк. Нужно доделать самостоятельно!
+        data = []
+        print(PeopleTable().find_by_id(num))
+        data.append(input("Введите имя (1 - отмена, 0 - пропустить поле): ").strip())
+        if data[0] == "1":
+            return
+        elif data[0] == "0":
+            data[0] = str(PeopleTable().find_by_id(num)[1])
+        while len(data[0].strip()) == 0 or len(data[0].strip()) > 32:
+            if len(data[0].strip()) == 0:
+                data[0] = input("Имя не может быть пустым! Введите имя заново (1 - отмена, 0 - пропустить поле): ").strip()
+                if data[0] == "1":
+                    return
+                elif data[0] == "0":
+                    data[0] = str(PeopleTable().find_by_id(num)[1])
+            if len(data[0].strip()) > 32:
+                data[0] = input("Имя не может быть длиннее 32 символов! Введите имя заново (1 - отмена, 0 - пропустить поле): ").strip()
+                if data[0] == "1":
+                    return
+                elif data[0] == "0":
+                    data[0] = str(PeopleTable().find_by_id(num)[1])
+        data.append(input("Введите фамилию (1 - отмена, 0 - пропустить поле): ").strip())
+        if data[1] == "1":
+            return
+        elif data[1] == "0":
+            data[1] = str(PeopleTable().find_by_id(num)[2])
+        while len(data[1].strip()) == 0 or len(data[1].strip()) > 32:
+            if len(data[1].strip()) == 0:
+                data[1] = input("Фамилия не может быть пустой! Введите фамилию заново (1 - отмена, 0 - пропустить поле): ").strip()
+                if data[1] == "1":
+                    return
+                elif data[1] == "0":
+                    data[1] = str(PeopleTable().find_by_id(num)[2])
+            if len(data[1].strip()) > 32:
+                data[1] = input(
+                    "Фамилия не может быть длиннее 32 символов! Введите фамилию заново (1 - отмена, 0 - пропустить поле): ").strip()
+                if data[1] == "1":
+                    return
+                elif data[1] == "0":
+                    data[1] = str(PeopleTable().find_by_id(num)[2])
+        data.append(input("Введите отчество (1 - отмена, 0 - пропустить поле): ").strip())
+        if data[2] == "1":
+            return
+        elif data[2] == "0":
+            data[2] = str(PeopleTable().find_by_id(num)[3])
+        while len(data[2].strip()) > 5000:
+            data[2] = input(
+                "Отчество не может быть длиннее 32 символов! Введите отчество заново (1 - отмена, 0 - пропустить поле): ").strip()
+            if data[2] == "1":
+                return
+            elif data[2] == "0":
+                data[2] = str(PeopleTable().find_by_id(num)[3])
+        pt = PeopleTable()
+        pt.update(num, data)
 
     def insert_new_phone(self):
         # Не реализована проверка на максимальную длину строк. Нужно доделать самостоятельно!
@@ -226,6 +304,7 @@ class Main:
         data = []
         data.append(self.person_id)
         data.append(input("Введите телефон, который хотите добавить (1 - отмена): ").strip())
+        print(data)
         if data[1] == "1":
             return
         while (len(data[1].strip()) == 0) or (len(data[1].strip()) > 12) or (
@@ -259,15 +338,17 @@ class Main:
 
     def search_phone(self):
         tel = input("Введите номер телефона, который хотите удалить (0 - отмена): ")
+        if tel == "0":
+            return "-1"
         while len(tel.strip()) == 0 or PhonesTable().check_number(self.person_id, tel) == False:
             if len(tel.strip()) == 0:
                 tel = input(
                     "Пустая строка. Повторите ввод! Повторите ввод номера телефона, который хотите удалить (0 - отмена): ")
                 if tel == "0":
-                    return "1"
+                    return "-1"
             if PhonesTable().check_number(self.person_id, tel) == False:
                 if tel == "0":
-                    return "1"
+                    return "-1"
                 tel = input(
                     f'Номера {tel} не существует! Повторите ввод номера телефона, который хотите удалить (0 - отмена): ')
                 # if tel == "0":
@@ -278,6 +359,8 @@ class Main:
 
     def delete_phone(self):
         num = self.search_phone()
+        if num=="-1":
+            return "1"
         pht = PhonesTable()
         pht.delete_phone(num)
         return
@@ -303,7 +386,8 @@ class Main:
         # Не реализована проверка на максимальную длину строк. Нужно доделать самостоятельно!
 
         tel = self.search_phone()
-
+        if tel=="-1":
+            return
         data = ''
         # data.append(self.person_id)
         tel_new = input("Введите телефон, который хотите добавить (1 - отмена): ").strip()
@@ -331,7 +415,7 @@ class Main:
                 tel_new = input(
                     f'Номер {tel_new} совпадает с добавляемым! Повторите ввод номера телефона, который хотите добавить (0 - отмена): ').strip()
                 if tel_new == "0":
-                    return "1"
+                    return
         print(data, tel)
         pht = PhonesTable()
         pht.update_phone(tel, tel_new)
