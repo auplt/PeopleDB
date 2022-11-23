@@ -1,4 +1,4 @@
-# PeopleDB | docs table
+# PeopleDB
 
 ## Description
 
@@ -33,4 +33,25 @@ git commit -m "<commit name>"
 - Push changes on GitHub
 ```
 git push origin docs_table
+```
+
+### Work on showing by page
+
+- Switch on the show_by_page branch
+```
+git checkout show_by_page
+```
+- Commit your changes on local repository
+    Description by lines:
+  - Adds all files from our folder to git's index OR you can specify file names
+  - NOT NECESSARY you can check what files are added to git's index
+  - Commits changes to your local repository. ```<commit name>``` must be changed on custom name
+```
+git add *
+git status
+git commit -m "<commit name>"
+```
+- Push changes on GitHub
+```
+git push origin show_by_page
 ```
