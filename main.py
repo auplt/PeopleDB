@@ -87,7 +87,7 @@ class Main:
     4 - удаление человека;
     5 - изменение информации о человеке;
     6 - просмотр телефонов человека;
-    66 - просмотр докуметов человека;
+    7 - просмотр докуметов человека;
     9 - выход."""
         print(menu)
         return
@@ -186,14 +186,15 @@ class Main:
                     self.person_obj = person
                     break
         print("Выбран человек: " + self.person_obj[1] + " " + self.person_obj[2] + " " + self.person_obj[3])
-        print("Документы: ")
+        # print("Документы: ")
         # lst = DocsTable().all_by_person_id(self.person_id)
         # for i in lst:
         #     print(i)
-        self.person_id = -1
-        menu = """Просмотр списка людей!\n№\tЧеловек\tТип\tСерия\tНомер\tДата"""
+        # self.person_id = -1
+        menu = """Просмотр списка людей!\nID\tЧьё\tТип\tСерия\tНомер\tДата"""
         print(menu)
-        lst = DocsTable().all()
+        # lst = DocsTable().all()
+        lst = DocsTable().all_by_person_id(self.person_id)
         for i in lst:
             print(str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\t" + str(i[3])+ "\t" + str(i[4])+ "\t" + str(i[5]))
         menu = """Дальнейшие операции:
@@ -334,37 +335,58 @@ class Main:
 
     def insert_new_docs(self):
         data = []
+        print(self.person_id)
         data.append(self.person_id)
-        data.append(input("Введите документ, который хотите добавить (-1 - отмена): ").strip())
+        data.append(input("Введите ТИП, который хотите добавить (-1 - отмена): ").strip())
         print(data)
         if data[1] == "-1":
             return
-        while (len(data[1].strip()) == 0) or (len(data[1].strip()) > 12) or (
-                (not (data[1][1:].isdigit() and data[1][0] == '+') and not (
-                        data[1].isdigit())) == True) or DocsTable().check_docs(self.person_id,
-                                                                                   data[1].strip()) == True:
+        while len(data[1].strip()) == 0 or len(data[1].strip()) > 32:
             if len(data[1].strip()) == 0:
-                data[1] = input(
-                    "Номер телефона не может быть пустым! Введите номер телефона заново (-1 - отмена): ").strip()
+                data[1] = input("ТИП не может быть пустой! Введите ТИП заново (-1 - отмена): ").strip()
                 if data[1] == "-1":
                     return
-            elif len(data[1].strip()) > 12:
+            if len(data[1].strip()) > 32:
                 data[1] = input(
-                    "Номер телефона не может быть длинее 12 цифр! Введите номер телефона заново (-1 - отмена): ").strip()
+                    "Тип не может быть длиннее 32 символов! Введите ТИП заново (-1 - отмена): ").strip()
                 if data[1] == "-1":
                     return
-            elif (not (data[1][1:].isdigit() and data[1][0] == '+') and not (data[1].isdigit())) == True:
-                data[1] = input(
-                    "Номер телефона должен состоять только из цифр или знака + и цифр! Введите номер телефона заново (-1 - отмена): ").strip()
+        data.append(input("Введите Серию (-1 - отмена): ").strip())
+        if data[2] == "-1":
+            return
+        while len(data[1].strip()) == 0 or len(data[1].strip()) > 32:
+            if len(data[1].strip()) == 0:
+                data[2] = input("Серия не может быть пустой! Введите Серия заново (-1 - отмена): ").strip()
+                if data[2] == "-1":
+                    return
+            if len(data[2].strip()) > 32:
+                data[2] = input(
+                    "Серия не может быть длиннее 32 символов! Введите Серия заново (-1 - отмена): ").strip()
                 if data[1] == "-1":
                     return
-            elif DocsTable().check_docs(self.person_id, data[1].strip()) == True:
-                data[1] = input(
-                    f'Документ {data[1]} уже существует! Повторите ввод докумета, который хотите добавить (-1 - отмена): ').strip()
-                if data[1] == "-1":
+        data.append(input("Введите Номер (-1 - отмена): ").strip())
+        if data[3] == "-1":
+            return
+        while len(data[3].strip()) > 5000:
+            data[3] = input(
+                "Номер не может быть длиннее 32 символов! Введите Номер заново (-1 - отмена): ").strip()
+            if data[3] == "-1":
+                return
+        data.append(input("Введите Дату (-1 - отмена): ").strip())
+        if data[4] == "-1":
+            return
+        while len(data[4].strip()) == 0 or len(data[4].strip()) > 32:
+            if len(data[4].strip()) == 0:
+                data[4] = input("Дата не может быть пустой! Введите Дату заново (-1 - отмена): ").strip()
+                if data[4] == "-1":
                     return
-        pht = DocsTable()
-        pht.insert_one(data)
+            if len(data[4].strip()) > 32:
+                data[4] = input(
+                    "Дата не может быть длиннее 10 символов! Введите Дату заново (-1 - отмена): ").strip()
+                if data[4] == "-1":
+                    return
+        pt = DocsTable()
+        pt.insert_one(data)
         return
 
     def search_phone(self, title):
@@ -386,18 +408,19 @@ class Main:
         return tel
 
     def search_docs(self, title):
-        cd = input(f"Введите номер документа, который хотите {title} (-1 - отмена): ")
+        cd = input(f"Введите ID документа, который хотите {title} (-1 - отмена): ")
         if cd == "-1":
             return "-1"
         while len(cd.strip()) == 0 or DocsTable().check_docs(self.person_id, cd) == False:
             if len(cd.strip()) == 0:
                 cd = input(
-                    "Пустая строка. Повторите ввод! Повторите ввод номера локумента, который хотите удалить (-1 - отмена): ")
+                    "Пустая строка. Повторите ввод! Повторите ввод ID локумента, который хотите удалить (-1 - отмена): ")
                 if cd == "-1":
                     return "-1"
             if DocsTable().check_docs(self.person_id, cd) == False:
                 cd = input(
-                    f'Номера {cd} не существует! Повторите ввод номера документа, который хотите удалить (-1 - отмена): ')
+                    f'ID документа {cd} не существует! Повторите ввод ID документа, который хотите удалить (-1 - отмена): ')
+                print(self.person_id)
                 if cd == "-1":
                     return "-1"
         print(self.person_id, cd)
@@ -452,7 +475,7 @@ class Main:
                     return
             elif tel_new == tel:
                 tel_new = input(
-                    f'Номер {tel_new} совпадает с добавляемым! Повторите ввод номера телефона, который хотите добавить (-1 - отмена): ').strip()
+                    'Номер {tel_new} совпадает с добавляемым! Повторите ввод номера телефона, который хотите добавить (-1 - отмена): ').strip()
                 if tel_new == "-1":
                     return
         print(data, tel)
@@ -532,18 +555,18 @@ class Main:
             return "1"
         elif current_menu == "6":
             self.insert_new_docs()
-            return "66"
+            return "7"
         elif current_menu == "7":
             self.delete_docs()
-            return "66"
+            return "7"
         elif current_menu == "8":
             self.update_docs()
-            return "66"
+            return "7"
         elif current_menu == "9":
             return "9"
 
     def people_menu_transporter(self, current_menu):
-        check_lst = ("0", "1", "3", "4", "5", "6", "66", "9", "input_err")
+        check_lst = ("0", "1", "3", "4", "5", "6", "7", "9", "input_err")
         while True:
             if current_menu not in check_lst:
                 # print("people_menu_transporter")
@@ -570,17 +593,17 @@ class Main:
                 if current_menu != "1":
                     next_step = self.read_next_step()
                     current_menu = self.phones_table_transporter(next_step)
-            elif current_menu == "66":
+            elif current_menu == "7":
                 current_menu = self.show_docs_by_people()
                 if current_menu != "1":
                     next_step = self.read_next_step()
                     current_menu = self.docs_table_transporter(next_step)
             elif current_menu == "input_err":
                 next_step = self.read_next_step()
-                current_menu = self.phones_table_transporter(next_step)
+                current_menu = self.main_menu_transporter(next_step)
 
     def main_menu_transporter(self, current_menu):
-        check_lst = ("0", "1", "2", "9", "input_err")
+        check_lst = ("0", "1", "2", "7", "9", "input_err")
         while True:
             if current_menu not in check_lst:
                 # print("main_menu_transporter")
@@ -602,7 +625,7 @@ class Main:
                 return "9"
             elif current_menu == "input_err":
                 next_step = self.read_next_step()
-                current_menu = self.people_menu_transporter(next_step)
+                current_menu = self.docs_table_transporter(next_step)
 
     def main_cycle(self, current_menu="0"):
         while (current_menu != "9"):

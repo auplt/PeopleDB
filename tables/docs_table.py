@@ -11,7 +11,7 @@ class DocsTable(DbTable):
                 "type": ["varchar(32)", "NOT NULL"],
                 "serial": ["varchar(32)", "NOT NULL"],
                 "number": ["varchar(32)", "NOT NULL"],
-                "date": ["varchar(32)", "NOT NULL"]}
+                "date": ["varchar(10)", "NOT NULL"]}
 
     def all_by_person_id(self, pid):
         sql = "SELECT * FROM " + self.table_name()
@@ -24,9 +24,10 @@ class DocsTable(DbTable):
 
     def check_docs(self, pid, cd):
         cur = self.dbconn.conn.cursor()
-        cur.execute(f'SELECT docs FROM {self.table_name()} WHERE person_id = :id', {'id': int(pid)})
+        cur.execute(f'SELECT id FROM {self.table_name()} WHERE person.id = :id', {'id': int(pid)})
+        print(pid)
         result = cur.fetchall()
-        # print(result)
+        print(result)
         for i in result:
             # print(i, cd)
             if str(cd) == i[0]:
@@ -43,7 +44,7 @@ class DocsTable(DbTable):
         sql = "DELETE FROM " + self.table_name()
         sql += " WHERE person_id=" + self.primary_key()[0]
         # print(sql)
-        sql += " AND docs=:tell"
+        sql += " AND id=:tell"
         # sql+= " IN DocsTable.docs"
         cur = self.dbconn.conn.cursor()
         cur.execute(sql, {"tell": str(cd)})
@@ -54,9 +55,9 @@ class DocsTable(DbTable):
 
     def update_docs(self, cd, new_cd):
         cur = self.dbconn.conn.cursor()
-        cur.execute(f"UPDATE {self.table_name()} SET docs=:new_cd WHERE person_id={self.primary_key()[0]} AND docs=:cd", {'cd': str(cd), 'new_cd': str(new_cd)})
+        cur.execute(f"UPDATE {self.table_name()} SET id=:new_cd WHERE person_id={self.primary_key()[0]} AND id=:cd", {'cd': str(cd), 'new_cd': str(new_cd)})
         print(self.primary_key())
-        print(f"UPDATE {self.table_name()} SET docs=:cd WHERE person_id={self.primary_key()[0]} AND docs=:new_cd", {'cd': str(cd), 'new_cd': str(new_cd)})
+        print(f"UPDATE {self.table_name()} SET id=:cd WHERE person_id={self.primary_key()[0]} AND id=:new_cd", {'cd': str(cd), 'new_cd': str(new_cd)})
         self.dbconn.conn.commit()
         return
 
