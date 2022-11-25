@@ -6,27 +6,57 @@ class DocsTable(DbTable):
         return self.dbconn.prefix + "docs"
 
     def columns(self):
-        return {"person_id": ["integer", "REFERENCES people(id)"],
+        return {"id": ["integer", "PRIMARY KEY", "AUTOINCREMENT"],
+                "person_id": ["integer", "REFERENCES people(id)"],
                 "type": ["varchar(32)", "NOT NULL"],
-                "series": ["varchar(32)", "NOT NULL"],
+                "serial": ["varchar(32)", "NOT NULL"],
                 "number": ["varchar(32)", "NOT NULL"],
-                "department": ["varchar(64)", "NOT NULL"],
-                "issue_date": ["varchar(11)", "NOT NULL"]}
-
-    def primary_key(self):
-        return ['person_id', 'type', 'series', 'number', 'department', 'issue_date']
-
-    def table_constraints(self):
-        return ["PRIMARY KEY(person_id, type, series, number, department, issue_date)"]
+                "date": ["varchar(32)", "NOT NULL"]}
 
     def all_by_person_id(self, pid):
         sql = "SELECT * FROM " + self.table_name()
         sql += " WHERE person_id = :id"
         sql += " ORDER BY "
         sql += ", ".join(self.primary_key())
-        print(sql)
         cur = self.dbconn.conn.cursor()
-        # cur.execute(sql, str(pid))
-        print(cur.execute("SELECT * FROM prj_docs WHERE person_id=:id", {'id': int(2)}))
+        cur.execute(sql, {"id": str(pid)})
         return cur.fetchall()
+
+    def check_docs(self, pid, cd):
+        cur = self.dbconn.conn.cursor()
+        cur.execute(f'SELECT docs FROM {self.table_name()} WHERE person_id = :id', {'id': int(pid)})
+        result = cur.fetchall()
+        # print(result)
+        for i in result:
+            # print(i, cd)
+            if str(cd) == i[0]:
+                return True
+        return False
+
+    def delete_docs_by_person(self, pid):
+        cur = self.dbconn.conn.cursor()
+        cur.execute(f'DELETE FROM {self.table_name()} WHERE person_id=:id', {'id': int(pid)})
+        self.dbconn.conn.commit()
+        return
+
+    def delete_docs(self, cd):
+        sql = "DELETE FROM " + self.table_name()
+        sql += " WHERE person_id=" + self.primary_key()[0]
+        # print(sql)
+        sql += " AND docs=:tell"
+        # sql+= " IN DocsTable.docs"
+        cur = self.dbconn.conn.cursor()
+        cur.execute(sql, {"tell": str(cd)})
+        # {"offset": num - 1}
+        # print(sql)
+        self.dbconn.conn.commit()
+        return
+
+    def update_docs(self, cd, new_cd):
+        cur = self.dbconn.conn.cursor()
+        cur.execute(f"UPDATE {self.table_name()} SET docs=:new_cd WHERE person_id={self.primary_key()[0]} AND docs=:cd", {'cd': str(cd), 'new_cd': str(new_cd)})
+        print(self.primary_key())
+        print(f"UPDATE {self.table_name()} SET docs=:cd WHERE person_id={self.primary_key()[0]} AND docs=:new_cd", {'cd': str(cd), 'new_cd': str(new_cd)})
+        self.dbconn.conn.commit()
+        return
 

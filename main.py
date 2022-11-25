@@ -3,9 +3,9 @@ sys.path.append('tables')
 
 from project_config import *
 from dbconnection import *
-from people_table import *
-from phones_table import *
-from docs_table import *
+from tables.people_table import *
+from tables.phones_table import *
+from tables.docs_table import *
 
 # from keysinterrupt import *
 
@@ -35,15 +35,16 @@ class Main:
     def db_insert_somethings(self):
         pt = PeopleTable()
         pht = PhonesTable()
+        dt = DocsTable()
         pt.insert_one(["Test", "Test", "Test"])
         pt.insert_one(["Test2", "Test2", "Test2"])
         pt.insert_one(["Test3", "Test3", "Test3"])
         pht.insert_one([1, "123"])
         pht.insert_one([2, "123"])
         pht.insert_one([3, "123"])
-        dt.insert_one([1, "Pass1", "s1", "n1", "d1", "date1"])
-        dt.insert_one([3, "Pass3", "s3", "n3", "d3", "date3"])
-        dt.insert_one([2, "Pass2", "s2", "n1", "d1", "date2"])
+        dt.insert_one([2, "insurance", "2121", "2211", "02.02.2002"])
+        dt.insert_one([1, "driving licence", "1111", "1", "03.03.2003"])
+        dt.insert_one([3, "passport", "3131", "333111", "01.01.2001"])
 
     def db_drop(self):
         pht = PhonesTable()
@@ -186,13 +187,19 @@ class Main:
                     break
         print("Выбран человек: " + self.person_obj[1] + " " + self.person_obj[2] + " " + self.person_obj[3])
         print("Документы: ")
-        lst = DocsTable().all_by_person_id(self.person_id)
+        # lst = DocsTable().all_by_person_id(self.person_id)
+        # for i in lst:
+        #     print(i)
+        self.person_id = -1
+        menu = """Просмотр списка людей!\n№\tЧеловек\tТип\tСерия\tНомер\tДата"""
+        print(menu)
+        lst = DocsTable().all()
         for i in lst:
-            print(i[1])
+            print(str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\t" + str(i[3])+ "\t" + str(i[4])+ "\t" + str(i[5]))
         menu = """Дальнейшие операции:
     0 - возврат в главное меню;
     1 - возврат в просмотр людей;
-    6 - добавление нового телефона;
+    6 - добавление нового документа;
     7 - удаление документа;
     8 - изменение документа;
     9 - выход."""
@@ -385,12 +392,12 @@ class Main:
         while len(cd.strip()) == 0 or DocsTable().check_docs(self.person_id, cd) == False:
             if len(cd.strip()) == 0:
                 cd = input(
-                    "Пустая строка. Повторите ввод! Повторите ввод номера телефона, который хотите удалить (-1 - отмена): ")
+                    "Пустая строка. Повторите ввод! Повторите ввод номера локумента, который хотите удалить (-1 - отмена): ")
                 if cd == "-1":
                     return "-1"
             if DocsTable().check_docs(self.person_id, cd) == False:
                 cd = input(
-                    f'Номера {cd} не существует! Повторите ввод номера телефона, который хотите удалить (-1 - отмена): ')
+                    f'Номера {cd} не существует! Повторите ввод номера документа, который хотите удалить (-1 - отмена): ')
                 if cd == "-1":
                     return "-1"
         print(self.person_id, cd)
@@ -525,13 +532,13 @@ class Main:
             return "1"
         elif current_menu == "6":
             self.insert_new_docs()
-            return "6"
+            return "66"
         elif current_menu == "7":
             self.delete_docs()
-            return "6"
+            return "66"
         elif current_menu == "8":
             self.update_docs()
-            return "6"
+            return "66"
         elif current_menu == "9":
             return "9"
 
