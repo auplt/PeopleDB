@@ -418,6 +418,7 @@ class Main:
                 if cd == "-1":
                     return "-1"
             if DocsTable().check_docs(self.person_id, cd) == False:
+                print("%%%%",DocsTable().check_docs(self.person_id, cd))
                 cd = input(
                     f'ID документа {cd} не существует! Повторите ввод ID документа, который хотите удалить (-1 - отмена): ')
                 print(self.person_id)

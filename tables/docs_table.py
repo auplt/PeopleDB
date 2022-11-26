@@ -24,13 +24,15 @@ class DocsTable(DbTable):
 
     def check_docs(self, pid, cd):
         cur = self.dbconn.conn.cursor()
-        cur.execute(f'SELECT id FROM {self.table_name()} WHERE person.id = :id', {'id': int(pid)})
+        cur.execute(f'SELECT id FROM {self.table_name()} WHERE person_id = :id', {'id': int(pid)})
         print(pid)
         result = cur.fetchall()
         print(result)
+        print("******")
         for i in result:
             # print(i, cd)
-            if str(cd) == i[0]:
+            print(cd, i[0])
+            if str(cd) == str(i[0]):
                 return True
         return False
 
