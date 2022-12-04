@@ -65,7 +65,7 @@ class PhonesTable(DbTable):
     def update_phone(self, tel, new_tel):
         cur = self.dbconn.conn.cursor()
         cur.execute(f"UPDATE {self.table_name()} SET phone=:new_tel WHERE person_id={self.primary_key()[0]} AND phone=:tel", {'tel': str(tel), 'new_tel': str(new_tel)})
-        print(self.primary_key())
-        print(f"UPDATE {self.table_name()} SET phone=:tel WHERE person_id={self.primary_key()[0]} AND phone=:new_tel", {'tel': str(tel), 'new_tel': str(new_tel)})
+        # print(self.primary_key())
+        # print(f"UPDATE {self.table_name()} SET phone=:tel WHERE person_id={self.primary_key()[0]} AND phone=:new_tel", {'tel': str(tel), 'new_tel': str(new_tel)})
         self.dbconn.conn.commit()
         return

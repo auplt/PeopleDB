@@ -63,8 +63,8 @@ class DbTable:
         sql += "?, " * len(vals)
         sql = sql.removesuffix(', ')
         sql += ')'
-        print(vals)
-        print(sql)
+        # print(vals)
+        # print(sql)
 
         # print(self.column_names_without_id())
         cur = self.dbconn.conn.cursor()
