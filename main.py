@@ -538,7 +538,7 @@ class Main:
     def update_docs(self):
         title = 'информацию о котором вы хотите изменить'
         num = self.search_docs(title)
-        print(num)
+        # print(num)
         if num == "-1":
             return
         # Не реализована проверка на максимальную длину строк. Нужно доделать самостоятельно!
