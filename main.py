@@ -73,6 +73,26 @@ class Main:
             next_step = input("=> ").strip()
         return next_step
 
+    def show_people(self):
+        self.person_id = -1
+        menu = """Просмотр списка людей!
+    №           Фамилия                Имя               Отчество"""
+        print(menu)
+        lst = PeopleTable().all()
+        for i in lst:
+            print(str(i[0]).center(10) + str(i[1]).center(20) + str(i[2]).center(20) + str(i[3]).center(20))
+        menu = """Дальнейшие операции: 
+    0 - возврат в главное меню;
+    3 - добавление нового человека;
+    4 - удаление человека;
+    5 - изменение информации о человеке;
+    6 - просмотр телефонов человека;
+    7 - просмотр докуметов человека;
+    8 - постраничный просмотр людей;
+    9 - выход."""
+        print(menu)
+        return
+
     def show_people_by_page(self):  # новая версия постраничного просмотра людей
         try:
             pd.DataFrame(['1'])
@@ -117,30 +137,8 @@ class Main:
                       .drop(['id'], axis=1))
                 if not flag:
                     print("---T-h-a-t---i-s---a-l-l---")
-
                 iter += 1
-
         return
-
-    def show_people(self):
-        self.person_id = -1
-        menu = """Просмотр списка людей!
-    №           Фамилия                Имя               Отчество"""
-        print(menu)
-        lst = PeopleTable().all()
-        for i in lst:
-            print(str(i[0]).center(10) + str(i[1]).center(20) + str(i[2]).center(20) + str(i[3]).center(20))
-        menu = """Дальнейшие операции: 
-    0 - возврат в главное меню;
-    3 - добавление нового человека;
-    4 - удаление человека;
-    5 - изменение информации о человеке;
-    6 - просмотр телефонов человека;
-    7 - просмотр докуметов человека;
-    9 - выход."""
-        print(menu)
-        return
-
     def show_add_person(self):
         # Не реализована проверка на максимальную длину строк. Нужно доделать самостоятельно!
         data = []
@@ -612,6 +610,53 @@ class Main:
         dt = DocsTable()
         dt.update_docs_2(num, data)
 
+    def show_people_by_page(self):  # новая версия постраничного просмотра людей
+        try:
+            pd.DataFrame(['1'])
+        except:
+            print('OOOPS, модуль Pandas не работает. Пожалуйста, импортируйте pandas с псевдонимом pd')
+        table = PeopleTable().all()
+        flag = True
+        num = -1
+        iter = 0
+        while num < 1:
+            try:
+                num = int(input("Сколько записей Вы хотите видеть на странице? "))
+            except:
+                print("Упс... некорректный ввод. Введите число еще раз")
+                continue
+            if num < 1:
+                print("Маловато... Введите число записей на странице еще раз")
+
+        while flag:
+            print('Выберите опцию:', f'1. Вывести следующие {num} записей', '2. Выйти из постраничного просмотра',
+                  sep='\n')
+            try:
+                p = int(input())
+            except:
+                continue
+            if p == 2:
+                flag = False
+                break
+            elif p != 1:
+                continue
+            else:
+                start = num * iter
+                if num * (iter + 1) >= len(table):
+                    stop = len(table)
+                    flag = False
+                else:
+                    stop = num * (iter + 1)
+
+                print(pd.DataFrame(table[start:stop], \
+                                   columns=['id', 'first_name', 'second_name', 'last_name'], \
+                                   index=[i + 1 for i in range(stop - start)]) \
+                      .drop(['id'], axis=1))
+                if not flag:
+                    print("---T-h-a-t---i-s---a-l-l---")
+                iter += 1
+        return
+
     def phones_table_transporter(self, current_menu):
         check_lst = ("0", "1", "6", "7", "8", "9")
         if current_menu not in check_lst:
@@ -657,7 +702,7 @@ class Main:
             return "9"
 
     def people_menu_transporter(self, current_menu):
-        check_lst = ("0", "1", "3", "4", "5", "6", "7", "9", "input_err")
+        check_lst = ("0", "1", "3", "4", "5", "6", "7", "8", "9", "input_err")
         while True:
             if current_menu not in check_lst:
                 # print("people_menu_transporter")
@@ -689,6 +734,9 @@ class Main:
                 if current_menu != "1":
                     next_step = self.read_next_step()
                     current_menu = self.docs_table_transporter(next_step)
+            elif current_menu == "8":
+                current_menu = self.show_people_by_page()
+                return "1"
             elif current_menu == "input_err":
                 next_step = self.read_next_step()
                 current_menu = self.main_menu_transporter(next_step)
