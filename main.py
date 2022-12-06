@@ -1,9 +1,9 @@
 import sys
 import pandas as pd
+import datetime
 sys.path.append('tables')
 
 from project_config import *
-from dbconnection import *
 from tables.people_table import *
 from tables.phones_table import *
 from tables.docs_table import *
@@ -76,11 +76,11 @@ class Main:
     def show_people(self):
         self.person_id = -1
         menu = """Просмотр списка людей!
-    №           Фамилия                Имя               Отчество"""
+№         Фамилия             Имя                 Отчество"""
         print(menu)
         lst = PeopleTable().all()
         for i in lst:
-            print(str(i[0]).center(10) + str(i[1]).center(20) + str(i[2]).center(20) + str(i[3]).center(20))
+            print(str(i[0]).ljust(10) + str(i[1]).ljust(20) + str(i[2]).ljust(20) + str(i[3]).ljust(20))
         menu = """Дальнейшие операции: 
     0 - возврат в главное меню;
     3 - добавление нового человека;
@@ -104,12 +104,16 @@ class Main:
         iter = 0
         while num < 1:
             try:
-                num = int(input("Сколько записей Вы хотите видеть на странице? "))
+                st = input("Сколько записей Вы хотите видеть на странице? (для выхода из постраничного просмотра введите -1) ")
+                if st == "-1":
+                    return
+                num = int(st)
             except:
                 print("Упс... некорректный ввод. Введите число еще раз")
                 continue
-            if num < 1:
-                print("Маловато... Введите число записей на странице еще раз")
+            else:
+                if num < 1:
+                    print("Маловато... Введите число записей на странице еще раз")
 
         while flag:
             print('Выберите опцию:', f'1. Вывести следующие {num} записей', '2. Выйти из постраничного просмотра',
@@ -131,8 +135,8 @@ class Main:
                 else:
                     stop = num * (iter + 1)
 
-                print(pd.DataFrame(table[start:stop], \
-                                   columns=['id', 'first_name', 'second_name', 'last_name'], \
+                print(pd.DataFrame(table[start:stop],
+                                   columns=['id', 'first_name', 'second_name', 'last_name'],
                                    index=[i + 1 for i in range(stop - start)]) \
                       .drop(['id'], axis=1))
                 if not flag:
@@ -239,13 +243,13 @@ class Main:
         #     print(i)
         # self.person_id = -1
         menu = """Просмотр списка людей!
-    ID        Чьё         Тип            Серия         Номер          Дата"""
+ID   Тип                 Серия          Номер          Дата"""
         print(menu)
         # lst = DocsTable().all()
         lst = DocsTable().all_by_person_id(self.person_id)
         for i in lst:
-            print(str(i[0]).center(10) + str(i[1]).center(10) + str(i[2]).center(15)
-                  + str(i[3]).center(15) + str(i[4]).center(15) + str(i[5]).center(15))
+            print(str(i[0]).ljust(5) + str(i[2]).ljust(20)
+                  + str(i[3]).ljust(15) + str(i[4]).ljust(15) + str(i[5]).ljust(15))
         menu = """Дальнейшие операции:
     0 - возврат в главное меню;
     1 - возврат в просмотр людей;
@@ -278,7 +282,10 @@ class Main:
             return
         pt = PeopleTable()
         pht = PhonesTable()
+        dt = DocsTable()
         pht.delete_phones_by_person(int(num))
+        pt.delete(int(num))
+        dt.delete_docs_by_person(int(num))
         pt.delete(int(num))
 
     def update_person(self):
@@ -403,8 +410,8 @@ class Main:
         data.append(input("Введите Серию (-1 - отмена): ").strip())
         if data[2] == "-1":
             return
-        while len(data[1].strip()) == 0 or len(data[1].strip()) > 32:
-            if len(data[1].strip()) == 0:
+        while len(data[2].strip()) == 0 or len(data[1].strip()) > 32:
+            if len(data[2].strip()) == 0:
                 data[2] = input("Серия не может быть пустой! Введите Серия заново (-1 - отмена): ").strip()
                 if data[2] == "-1":
                     return
@@ -413,29 +420,48 @@ class Main:
                     "Серия не может быть длиннее 32 символов! Введите Серия заново (-1 - отмена): ").strip()
                 if data[1] == "-1":
                     return
+
         data.append(input("Введите Номер (-1 - отмена): ").strip())
-        if data[3] == "-1":
-            return
-        while len(data[3].strip()) > 5000:
-            data[3] = input(
-                "Номер не может быть длиннее 32 символов! Введите Номер заново (-1 - отмена): ").strip()
-            if data[3] == "-1":
-                return
-        data.append(input("Введите Дату (-1 - отмена): ").strip())
+        while len(data[3].strip()) == 0 or len(data[3].strip()) > 32:
+            if len(data[3].strip()) == 0:
+                data[3] = input("Номер не может быть пустой! Введите Номер заново (-1 - отмена): ").strip()
+                if data[3] == "-1":
+                    return
+            if len(data[3].strip()) > 32:
+                data[3] = input(
+                    "Номер не может быть длиннее 32 символов! Введите Номер заново (-1 - отмена): ").strip()
+                if data[3] == "-1":
+                    return
+
+        data.append(input("Введите Дату в формате YYYY-MM-DD (-1 - отмена): ").strip())
         if data[4] == "-1":
+            print("1-1")
             return
         while len(data[4].strip()) == 0 or len(data[4].strip()) > 32:
             if len(data[4].strip()) == 0:
+                print("5")
                 data[4] = input("Дата не может быть пустой! Введите Дату заново (-1 - отмена): ").strip()
                 if data[4] == "-1":
                     return
-            if len(data[4].strip()) > 32:
+            if len(data[4].strip()) > 10:
                 data[4] = input(
                     "Дата не может быть длиннее 10 символов! Введите Дату заново (-1 - отмена): ").strip()
                 if data[4] == "-1":
+                    print("6")
                     return
-        pt = DocsTable()
-        pt.insert_one(data)
+        while True:
+            try:
+                datetime.datetime.strptime(data[4], '%Y-%m-%d')
+                break
+            except ValueError:
+                data[4] = input("Incorrect data format, should be YYYY-MM-DD(Заново)").strip()
+                if data[4] == "-1":
+                    print("6")
+                    return
+
+        print("7")
+        dt = DocsTable()
+        dt.insert_one(data)
         return
 
     def search_phone(self, title):
@@ -566,7 +592,7 @@ class Main:
         if data[1] == "-1":
             return
         elif data[1] == "-2":
-            data[1] = str(PeopleTable().find_by_id(num)[2])
+            data[1] = str(DocsTable().find_by_id(num)[2])
         while len(data[1].strip()) == 0 or len(data[1].strip()) > 32:
             if len(data[1].strip()) == 0:
                 data[1] = input(
@@ -586,76 +612,97 @@ class Main:
         if data[2] == "-1":
             return
         elif data[2] == "-2":
-            data[2] = str(PeopleTable().find_by_id(num)[3])
-        while len(data[2].strip()) > 5000:
-            data[2] = input(
-                "Номер не может быть длиннее 32 символов! Введите Номер заново (-1 - отмена, -2 - пропустить поле): ").strip()
+            data[2] = str(DocsTable().find_by_id(num)[3])
+        while len(data[2].strip()) == 0 or len(data[2].strip()) > 32:
+            if len(data[2].strip()) == 0:
+                data[2] = input("Номер не может быть пустой! Введите Номер заново (-1 - отмена): ").strip()
+                if data[2] == "-1":
+                    return
+            if len(data[2].strip()) > 32:
+                data[2] = input(
+                    "Номер не может быть длиннее 32 символов! Введите Номер заново (-1 - отмена, -2 - пропустить поле): ").strip()
             if data[2] == "-1":
                 return
             elif data[2] == "-2":
-                data[2] = str(PeopleTable().find_by_id(num)[3])
-        data.append(input("Введите Дату (-1 - отмена, -2 - пропустить поле): ").strip())
+                data[2] = str(DocsTable().find_by_id(num)[3])
+        data.append(input("Введите Дату в формате YYYY-MM-DD (-1 - отмена): ").strip())
         if data[3] == "-1":
+            print("1-1")
             return
-        elif data[3] == "-2":
-            data[3] = str(PeopleTable().find_by_id(num)[3])
-        while len(data[3].strip()) > 5000:
-            data[3] = input(
-                "Дата не может быть длиннее 10 символов! Введите Дату заново (-1 - отмена, -2 - пропустить поле): ").strip()
-            if data[3] == "-1":
-                return
-            elif data[3] == "-2":
-                data[3] = str(PeopleTable().find_by_id(num)[4])
-
+        while len(data[3].strip()) == 0 or len(data[3].strip()) > 32:
+            if len(data[3].strip()) == 0:
+                print("5")
+                data[3] = input("Дата не может быть пустой! Введите Дату заново (-1 - отмена, -2 - пропустить поле): ").strip()
+                if data[3] == "-1":
+                    return
+                elif data[3] == "-2":
+                    data[3] = str(DocsTable().find_by_id(num)[4])
+            if len(data[3].strip()) > 10:
+                data[3] = input(
+                    "Дата не может быть длиннее 10 символов! Введите Дату заново (-1 - отмена, -2 - пропустить поле): ").strip()
+                if data[3] == "-1":
+                    return
+                elif data[3] == "-2":
+                    data[3] = str(DocsTable().find_by_id(num)[4])
+        while True:
+            try:
+                datetime.datetime.strptime(data[3], '%Y-%m-%d')
+                break
+            except ValueError:
+                data[3] = input("Неправильный формат. Введите ГГГГ-ММ-ДД((-1 - отмена)").strip()
+                if data[3] == "-1":
+                    print("6")
+                    return
         dt = DocsTable()
         dt.update_docs_2(num, data)
-
-    def show_people_by_page(self):  # новая версия постраничного просмотра людей
-        try:
-            pd.DataFrame(['1'])
-        except:
-            print('OOOPS, модуль Pandas не работает. Пожалуйста, импортируйте pandas с псевдонимом pd')
-        table = PeopleTable().all()
-        flag = True
-        num = -1
-        iter = 0
-        while num < 1:
-            try:
-                num = int(input("Сколько записей Вы хотите видеть на странице? "))
-            except:
-                print("Упс... некорректный ввод. Введите число еще раз")
-                continue
-            if num < 1:
-                print("Маловато... Введите число записей на странице еще раз")
-
-        while flag:
-            print('Выберите опцию:', f'1. Вывести следующие {num} записей', '2. Выйти из постраничного просмотра',
-                  sep='\n')
-            try:
-                p = int(input())
-            except:
-                continue
-            if p == 2:
-                flag = False
-                break
-            elif p != 1:
-                continue
-            else:
-                start = num * iter
-                if num * (iter + 1) >= len(table):
-                    stop = len(table)
-                    flag = False
-                else:
-                    stop = num * (iter + 1)
-
-                print(pd.DataFrame(table[start:stop], \
-                                   columns=['id', 'first_name', 'second_name', 'last_name'], \
-                                   index=[i + 1 for i in range(stop - start)]) \
-                      .drop(['id'], axis=1))
-                if not flag:
-                    print("---T-h-a-t---i-s---a-l-l---")
-                iter += 1
         return
+
+    # def show_people_by_page(self):  # новая версия постраничного просмотра людей
+    #     try:
+    #         pd.DataFrame(['1'])
+    #     except:
+    #         print('OOOPS, модуль Pandas не работает. Пожалуйста, импортируйте pandas с псевдонимом pd')
+    #     table = PeopleTable().all()
+    #     flag = True
+    #     num = -1
+    #     iter = 0
+    #     while num < 1:
+    #         try:
+    #             num = int(input("Сколько записей Вы хотите видеть на странице? "))
+    #         except:
+    #             print("Упс... некорректный ввод. Введите число еще раз")
+    #             continue
+    #         if num < 1:
+    #             print("Маловато... Введите число записей на странице еще раз")
+    #
+    #     while flag:
+    #         print('Выберите опцию:', f'1. Вывести следующие {num} записей', '2. Выйти из постраничного просмотра',
+    #               sep='\n')
+    #         try:
+    #             p = int(input())
+    #         except:
+    #             continue
+    #         if p == 2:
+    #             flag = False
+    #             break
+    #         elif p != 1:
+    #             continue
+    #         else:
+    #             start = num * iter
+    #             if num * (iter + 1) >= len(table):
+    #                 stop = len(table)
+    #                 flag = False
+    #             else:
+    #                 stop = num * (iter + 1)
+    #
+    #             print(pd.DataFrame(table[start:stop], \
+    #                                columns=['id', 'first_name', 'second_name', 'last_name'], \
+    #                                index=[i + 1 for i in range(stop - start)]) \
+    #                   .drop(['id'], axis=1))
+    #             if not flag:
+    #                 print("---T-h-a-t---i-s---a-l-l---")
+    #             iter += 1
+    #             return
 
     def phones_table_transporter(self, current_menu):
         check_lst = ("0", "1", "6", "7", "8", "9")
@@ -764,7 +811,7 @@ class Main:
                 return "9"
             elif current_menu == "input_err":
                 next_step = self.read_next_step()
-                current_menu = self.docs_table_transporter(next_step)
+                current_menu = self.people_menu_transporter(next_step)
 
     def main_cycle(self, current_menu="0"):
         while (current_menu != "9"):
