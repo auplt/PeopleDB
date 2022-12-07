@@ -454,7 +454,7 @@ ID   Тип                 Серия          Номер          Дата"""
                 datetime.datetime.strptime(data[4], '%d-%m-%Y')
                 break
             except ValueError:
-                data[4] = input("Неправильный формат. Введите ДД-ММ-ГГГГ (-1 - отмена):").strip()
+                data[4] = input("Неправильный формат. Введите ДД-ММ-ГГГГ (-1 - отмена): ").strip()
                 if data[4] == "-1":
                     print("6")
                     return
@@ -649,7 +649,7 @@ ID   Тип                 Серия          Номер          Дата"""
                 datetime.datetime.strptime(data[3], '%d-%m-%Y')
                 break
             except ValueError:
-                data[3] = input("Неправильный формат. Введите ГГГГ-ММ-ДД (-1 - отмена):").strip()
+                data[3] = input("Неправильный формат. Введите ДД-ММ-ГГГГ (-1 - отмена): ").strip()
                 if data[3] == "-1":
                     print("6")
                     return
