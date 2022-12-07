@@ -1,0 +1,2 @@
+dbfilepath: project.db
+dbtableprefix: prj_
