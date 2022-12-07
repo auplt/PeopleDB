@@ -60,7 +60,6 @@ class PhonesTable(DbTable):
         # {"offset": num - 1}
         # print(sql)
         self.dbconn.conn.commit()
-
         return
 
     def update_phone(self, tel, new_tel):

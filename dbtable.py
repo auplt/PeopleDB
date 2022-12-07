@@ -63,16 +63,8 @@ class DbTable:
         sql += "?, " * len(vals)
         sql = sql.removesuffix(', ')
         sql += ')'
-
         # print(vals)
-        vals = tuple(vals)
-        sql = "INSERT INTO " + self.table_name() + "("
-        sql += ", ".join(self.column_names_without_id()) + ") VALUES( "
-        sql += "?, " * len(vals)
-        sql = sql.removesuffix(', ')
-        sql += ')'
-        print(vals)
-        print(sql)
+        # print(sql)
 
         # print(self.column_names_without_id())
         cur = self.dbconn.conn.cursor()

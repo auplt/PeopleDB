@@ -19,7 +19,6 @@ class DocsTable(DbTable):
         sql += " ORDER BY "
         sql += ", ".join(self.primary_key())
         cur = self.dbconn.conn.cursor()
-
         cur.execute(sql, {"id": str(pid)})
         return cur.fetchall()
 
@@ -92,10 +91,5 @@ class DocsTable(DbTable):
         cur.execute(sql, {'type':str(vals[0]),'serial':str(vals[1]), 'number':str(vals[2]), 'date':str(vals[3]), 'id':int(pid)})
         # print(sql)
         self.dbconn.conn.commit()
-        # return
-
-
-        # cur.execute(sql, str(pid))
-        print(cur.execute("SELECT * FROM prj_docs WHERE person_id=:id", {'id': int(2)}))
-        return cur.fetchall()
+        return
 
