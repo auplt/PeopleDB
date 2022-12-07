@@ -43,9 +43,9 @@ class Main:
         pht.insert_one([1, "123"])
         pht.insert_one([2, "123"])
         pht.insert_one([3, "123"])
-        dt.insert_one([2, "insurance", "2121", "2211", "02.02.2002"])
-        dt.insert_one([1, "driving licence", "1111", "1", "03.03.2003"])
-        dt.insert_one([3, "passport", "3131", "333111", "01.01.2001"])
+        dt.insert_one([2, "insurance", "2121", "2211", "02-02-2002"])
+        dt.insert_one([1, "driving licence", "1111", "1", "03-03-2003"])
+        dt.insert_one([3, "passport", "3131", "333111", "01-01-2001"])
 
     def db_drop(self):
         pht = PhonesTable()
@@ -104,7 +104,7 @@ class Main:
         iter = 0
         while num < 1:
             try:
-                st = input("Сколько записей Вы хотите видеть на странице? (для выхода из постраничного просмотра введите -1) ")
+                st = input("Сколько записей Вы хотите видеть на странице? (-1 - отмена) ")
                 if st == "-1":
                     return
                 num = int(st)
@@ -393,18 +393,18 @@ ID   Тип                 Серия          Номер          Дата"""
         data = []
         print(self.person_id)
         data.append(self.person_id)
-        data.append(input("Введите ТИП, который хотите добавить (-1 - отмена): ").strip())
+        data.append(input("Введите Тип, который хотите добавить (-1 - отмена): ").strip())
         print(data)
         if data[1] == "-1":
             return
         while len(data[1].strip()) == 0 or len(data[1].strip()) > 32:
             if len(data[1].strip()) == 0:
-                data[1] = input("ТИП не может быть пустой! Введите ТИП заново (-1 - отмена): ").strip()
+                data[1] = input("Тип не может быть пустой! Введите Тип заново (-1 - отмена): ").strip()
                 if data[1] == "-1":
                     return
             if len(data[1].strip()) > 32:
                 data[1] = input(
-                    "Тип не может быть длиннее 32 символов! Введите ТИП заново (-1 - отмена): ").strip()
+                    "Тип не может быть длиннее 32 символов! Введите Тип заново (-1 - отмена): ").strip()
                 if data[1] == "-1":
                     return
         data.append(input("Введите Серию (-1 - отмена): ").strip())
@@ -433,7 +433,7 @@ ID   Тип                 Серия          Номер          Дата"""
                 if data[3] == "-1":
                     return
 
-        data.append(input("Введите Дату в формате YYYY-MM-DD (-1 - отмена): ").strip())
+        data.append(input("Введите Дату в формате ДД-ММ-ГГГГ (-1 - отмена): ").strip())
         if data[4] == "-1":
             print("1-1")
             return
@@ -451,10 +451,10 @@ ID   Тип                 Серия          Номер          Дата"""
                     return
         while True:
             try:
-                datetime.datetime.strptime(data[4], '%Y-%m-%d')
+                datetime.datetime.strptime(data[4], '%d-%m-%Y')
                 break
             except ValueError:
-                data[4] = input("Incorrect data format, should be YYYY-MM-DD(Заново)").strip()
+                data[4] = input("Неправильный формат. Введите ДД-ММ-ГГГГ (-1 - отмена):").strip()
                 if data[4] == "-1":
                     print("6")
                     return
@@ -568,7 +568,7 @@ ID   Тип                 Серия          Номер          Дата"""
         # Не реализована проверка на максимальную длину строк. Нужно доделать самостоятельно!
         data = []
         # print(DocsTable().find_by_id(num))
-        data.append(input("Введите ТИП (-1 - отмена, -2 - пропустить поле): ").strip())
+        data.append(input("Введите Тип (-1 - отмена, -2 - пропустить поле): ").strip())
         if data[0] == "-1":
             return
         elif data[0] == "-2":
@@ -576,14 +576,14 @@ ID   Тип                 Серия          Номер          Дата"""
         while len(data[0].strip()) == 0 or len(data[0].strip()) > 32:
             if len(data[0].strip()) == 0:
                 data[0] = input(
-                    "ТИП не может быть пустым! Введите ТИП заново (-1 - отмена, -2 - пропустить поле): ").strip()
+                    "Тип не может быть пустым! Введите Тип заново (-1 - отмена, -2 - пропустить поле): ").strip()
                 if data[0] == "-1":
                     return
                 elif data[0] == "-2":
                     data[0] = str(DocsTable().find_by_id(num)[1])
             if len(data[0].strip()) > 32:
                 data[0] = input(
-                    "ТИП не может быть длиннее 32 символов! Введите ТИП заново (-1 - отмена, -2 - пропустить поле): ").strip()
+                    "Тип не может быть длиннее 32 символов! Введите Тип заново (-1 - отмена, -2 - пропустить поле): ").strip()
                 if data[0] == "-1":
                     return
                 elif data[0] == "-2":
@@ -625,7 +625,7 @@ ID   Тип                 Серия          Номер          Дата"""
                 return
             elif data[2] == "-2":
                 data[2] = str(DocsTable().find_by_id(num)[3])
-        data.append(input("Введите Дату в формате YYYY-MM-DD (-1 - отмена): ").strip())
+        data.append(input("Введите Дату в формате ДД-ММ-ГГГГ (-1 - отмена): ").strip())
         if data[3] == "-1":
             print("1-1")
             return
@@ -646,10 +646,10 @@ ID   Тип                 Серия          Номер          Дата"""
                     data[3] = str(DocsTable().find_by_id(num)[4])
         while True:
             try:
-                datetime.datetime.strptime(data[3], '%Y-%m-%d')
+                datetime.datetime.strptime(data[3], '%d-%m-%Y')
                 break
             except ValueError:
-                data[3] = input("Неправильный формат. Введите ГГГГ-ММ-ДД((-1 - отмена)").strip()
+                data[3] = input("Неправильный формат. Введите ГГГГ-ММ-ДД (-1 - отмена):").strip()
                 if data[3] == "-1":
                     print("6")
                     return
