@@ -136,7 +136,7 @@ class Main:
                 print('Выберите опцию:', f'1. Вывести следующие {num} записей', '2. Выйти из постраничного просмотра',
                       sep='\n')
                 try:
-                    p = int(input())
+                    p = int(input("=> "))
                 except:
                     continue
                 else:
