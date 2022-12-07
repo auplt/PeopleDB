@@ -3,7 +3,7 @@ import sys
 from tables.people_table import *
 from tables.phones_table import *
 from tables.docs_table import *
-
+import pandas as pd
 # from keysinterrupt import *
 
 sys.path.append('tables')
@@ -72,12 +72,21 @@ class Main:
 
     def show_people(self):
         self.person_id = -1
+<<<<<<< Updated upstream
         menu = """Просмотр списка людей!
 №\tФамилия\tИмя\tОтчество"""
         print(menu)
         lst = PeopleTable().all()
         for i in lst:
             print(str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\t" + str(i[3]))
+=======
+#         menu = """Просмотр списка людей!
+# №         Фамилия             Имя                 Отчество"""
+#         print(menu)
+#         lst = PeopleTable().all()
+#         for i in lst:
+#             print(str(i[0]).ljust(10) + str(i[1]).ljust(20) + str(i[2]).ljust(20) + str(i[3]).ljust(20))
+>>>>>>> Stashed changes
         menu = """Дальнейшие операции: 
     0 - возврат в главное меню;
     3 - добавление нового человека;
@@ -89,6 +98,69 @@ class Main:
         print(menu)
         return
 
+<<<<<<< Updated upstream
+=======
+    def show_people_by_page(self):  # новая версия постраничного просмотра людей
+        try:
+            pd.DataFrame(['1'])
+        except:
+            print('OOOPS, модуль Pandas не работает. Пожалуйста, импортируйте pandas с псевдонимом pd')
+            return
+        table = PeopleTable().all()
+        flag = True
+        num = -2
+        iter = 0
+        while num < 1:
+            try:
+                st = input("Сколько записей Вы хотите видеть на странице? (-1 - отмена): ")
+                if st == "-1":
+                    print("Произведена отмена")
+                    return
+                num = int(st)
+            except:
+                print("Упс... некорректный ввод. Введите число еще раз")
+                continue
+            else:
+                if num < 1:
+                    print("Маловато... Введите число записей на странице еще раз")
+
+        while flag:
+            start = num * iter
+            if num * (iter + 1) >= len(table):
+                stop = len(table)
+                flag = False
+            else:
+                stop = num * (iter + 1)
+            # tframe = pd.DataFrame(table[start:stop],
+            #                    columns=['id', 'Фамилия', 'Имя', 'Отчество'],
+            #                    index=[i+1 for i in range(start, stop)]).drop(['id'], axis=1)
+            # tframe.index.rename('№', inplace=True)
+            print("{:<10}{:<20}{:<20}{:<20}".format("№", "Фамилия", "Имя", "Отчество"))
+            # print(tframe)
+            for i in range(start, stop):
+                print(f"{i+1:<10}{table[i][1]:<20}{table[i][2]:<20}{table[i][3]:<20}")
+            if not flag:
+                print("---T-h-a-t---i-s---a-l-l---")
+                return
+            iter += 1
+            flag = False
+            while not flag:
+                print('Выберите опцию:', f'1. Вывести следующие {num} записей', '2. Выйти из постраничного просмотра',
+                      sep='\n')
+                try:
+                    p = int(input())
+                except:
+                    continue
+                else:
+                    if p == 2:
+                        # flag = False
+                        # break
+                        return
+                    elif p != 1:
+                        continue
+                    flag = True
+        return
+>>>>>>> Stashed changes
     def show_add_person(self):
         # Не реализована проверка на максимальную длину строк. Нужно доделать самостоятельно!
         data = []
@@ -357,6 +429,107 @@ class Main:
         pht.update_phone(tel, tel_new)
         return
 
+<<<<<<< Updated upstream
+=======
+    def update_docs(self):
+        title = 'информацию о котором вы хотите изменить'
+        num = self.search_docs(title)
+        # print(num)
+        if num == "-1":
+            return
+        # Не реализована проверка на максимальную длину строк. Нужно доделать самостоятельно!
+        data = []
+        # print(DocsTable().find_by_id(num))
+        data.append(input("Введите Тип (-1 - отмена, -2 - пропустить поле): ").strip())
+        if data[0] == "-1":
+            return
+        elif data[0] == "-2":
+            data[0] = str(DocsTable().find_by_id(num)[1])
+        while len(data[0].strip()) == 0 or len(data[0].strip()) > 32:
+            if len(data[0].strip()) == 0:
+                data[0] = input(
+                    "Тип не может быть пустым! Введите Тип заново (-1 - отмена, -2 - пропустить поле): ").strip()
+                if data[0] == "-1":
+                    return
+                elif data[0] == "-2":
+                    data[0] = str(DocsTable().find_by_id(num)[1])
+            if len(data[0].strip()) > 32:
+                data[0] = input(
+                    "Тип не может быть длиннее 32 символов! Введите Тип заново (-1 - отмена, -2 - пропустить поле): ").strip()
+                if data[0] == "-1":
+                    return
+                elif data[0] == "-2":
+                    data[0] = str(DocsTable().find_by_id(num)[1])
+        data.append(input("Введите Серию (-1 - отмена, -2 - пропустить поле): ").strip())
+        if data[1] == "-1":
+            return
+        elif data[1] == "-2":
+            data[1] = str(DocsTable().find_by_id(num)[2])
+        while len(data[1].strip()) == 0 or len(data[1].strip()) > 32:
+            if len(data[1].strip()) == 0:
+                data[1] = input(
+                    "Серия не может быть пустой! Введите Серию заново (-1 - отмена, -2 - пропустить поле): ").strip()
+                if data[1] == "-1":
+                    return
+                elif data[1] == "-2":
+                    data[1] = str(PeopleTable().find_by_id(num)[2])
+            if len(data[1].strip()) > 32:
+                data[1] = input(
+                    "Серия не может быть длиннее 32 символов! Введите Серию заново (-1 - отмена, -2 - пропустить поле): ").strip()
+                if data[1] == "-1":
+                    return
+                elif data[1] == "-2":
+                    data[1] = str(PeopleTable().find_by_id(num)[2])
+        data.append(input("Введите Номер (-1 - отмена, -2 - пропустить поле): ").strip())
+        if data[2] == "-1":
+            return
+        elif data[2] == "-2":
+            data[2] = str(DocsTable().find_by_id(num)[3])
+        while len(data[2].strip()) == 0 or len(data[2].strip()) > 32:
+            if len(data[2].strip()) == 0:
+                data[2] = input("Номер не может быть пустой! Введите Номер заново (-1 - отмена): ").strip()
+                if data[2] == "-1":
+                    return
+            if len(data[2].strip()) > 32:
+                data[2] = input(
+                    "Номер не может быть длиннее 32 символов! Введите Номер заново (-1 - отмена, -2 - пропустить поле): ").strip()
+            if data[2] == "-1":
+                return
+            elif data[2] == "-2":
+                data[2] = str(DocsTable().find_by_id(num)[3])
+        data.append(input("Введите Дату в формате ДД-ММ-ГГГГ (-1 - отмена): ").strip())
+        if data[3] == "-1":
+            print("1-1")
+            return
+        while len(data[3].strip()) == 0 or len(data[3].strip()) > 32:
+            if len(data[3].strip()) == 0:
+                print("5")
+                data[3] = input("Дата не может быть пустой! Введите Дату заново (-1 - отмена, -2 - пропустить поле): ").strip()
+                if data[3] == "-1":
+                    return
+                elif data[3] == "-2":
+                    data[3] = str(DocsTable().find_by_id(num)[4])
+            if len(data[3].strip()) > 10:
+                data[3] = input(
+                    "Дата не может быть длиннее 10 символов! Введите Дату заново (-1 - отмена, -2 - пропустить поле): ").strip()
+                if data[3] == "-1":
+                    return
+                elif data[3] == "-2":
+                    data[3] = str(DocsTable().find_by_id(num)[4])
+        while True:
+            try:
+                datetime.datetime.strptime(data[3], '%d-%m-%Y')
+                break
+            except ValueError:
+                data[3] = input("Неправильный формат. Введите ДД-ММ-ГГГГ (-1 - отмена): ").strip()
+                if data[3] == "-1":
+                    print("6")
+                    return
+        dt = DocsTable()
+        dt.update_docs_2(num, data)
+        return
+
+>>>>>>> Stashed changes
     def phones_table_transporter(self, current_menu):
         check_lst = ("0", "1", "6", "7", "8", "9")
         if current_menu not in check_lst:
