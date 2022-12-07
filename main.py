@@ -73,6 +73,7 @@ class Main:
     def show_people(self):
         self.person_id = -1
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         menu = """Просмотр списка людей!
 №\tФамилия\tИмя\tОтчество"""
         print(menu)
@@ -86,6 +87,14 @@ class Main:
 #         lst = PeopleTable().all()
 #         for i in lst:
 #             print(str(i[0]).ljust(10) + str(i[1]).ljust(20) + str(i[2]).ljust(20) + str(i[3]).ljust(20))
+>>>>>>> Stashed changes
+=======
+        #         menu = """Просмотр списка людей!
+        # №         Фамилия             Имя                 Отчество"""
+        #         print(menu)
+        #         lst = PeopleTable().all()
+        #         for i in lst:
+        #             print(str(i[0]).ljust(10) + str(i[1]).ljust(20) + str(i[2]).ljust(20) + str(i[3]).ljust(20))
 >>>>>>> Stashed changes
         menu = """Дальнейшие операции: 
     0 - возврат в главное меню;
@@ -131,12 +140,16 @@ class Main:
                 flag = False
             else:
                 stop = num * (iter + 1)
+<<<<<<< Updated upstream
             # tframe = pd.DataFrame(table[start:stop],
             #                    columns=['id', 'Фамилия', 'Имя', 'Отчество'],
             #                    index=[i+1 for i in range(start, stop)]).drop(['id'], axis=1)
             # tframe.index.rename('№', inplace=True)
             print("{:<10}{:<20}{:<20}{:<20}".format("№", "Фамилия", "Имя", "Отчество"))
             # print(tframe)
+=======
+            print("{:<10}{:<20}{:<20}{:<20}".format("№", "Фамилия", "Имя", "Отчество"))
+>>>>>>> Stashed changes
             for i in range(start, stop):
                 print(f"{i+1:<10}{table[i][1]:<20}{table[i][2]:<20}{table[i][3]:<20}")
             if not flag:
@@ -153,13 +166,69 @@ class Main:
                     continue
                 else:
                     if p == 2:
+<<<<<<< Updated upstream
                         # flag = False
                         # break
+=======
+>>>>>>> Stashed changes
                         return
                     elif p != 1:
                         continue
                     flag = True
         return
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+    # def show_people_by_page(self):  # новая версия постраничного просмотра людей
+    #     try:
+    #         pd.DataFrame(['1'])
+    #     except:
+    #         print('OOOPS, модуль Pandas не работает. Пожалуйста, импортируйте pandas с псевдонимом pd')
+    #     table = PeopleTable().all()
+    #     flag = True
+    #     num = -1
+    #     iter = 0
+    #     while num < 1:
+    #         try:
+    #             st = input("Сколько записей Вы хотите видеть на странице? (-1 - отмена) ")
+    #             if st == "-1":
+    #                 return
+    #             num = int(st)
+    #         except:
+    #             print("Упс... некорректный ввод. Введите число еще раз")
+    #             continue
+    #         else:
+    #             if num < 1:
+    #                 print("Маловато... Введите число записей на странице еще раз")
+    #
+    #     while flag:
+    #         print('Выберите опцию:', f'1. Вывести следующие {num} записей', '2. Выйти из постраничного просмотра',
+    #               sep='\n')
+    #         try:
+    #             p = int(input())
+    #         except:
+    #             continue
+    #         if p == 2:
+    #             flag = False
+    #             break
+    #         elif p != 1:
+    #             continue
+    #         else:
+    #             start = num * iter
+    #             if num * (iter + 1) >= len(table):
+    #                 stop = len(table)
+    #                 flag = False
+    #             else:
+    #                 stop = num * (iter + 1)
+    #
+    #             print(pd.DataFrame(table[start:stop],
+    #                                columns=['id', 'first_name', 'second_name', 'last_name'],
+    #                                index=[i + 1 for i in range(stop - start)]) \
+    #                   .drop(['id'], axis=1))
+    #             if not flag:
+    #                 print("---T-h-a-t---i-s---a-l-l---")
+    #             iter += 1
+    #     return
 >>>>>>> Stashed changes
     def show_add_person(self):
         # Не реализована проверка на максимальную длину строк. Нужно доделать самостоятельно!
