@@ -128,20 +128,28 @@ class Main:
             elif p != 1:
                 continue
             else:
-                start = num * iter
-                if num * (iter + 1) >= len(table):
-                    stop = len(table)
-                    flag = False
+                stop = num * (iter + 1)
+            print("{:<10}{:<20}{:<20}{:<20}".format("№", "Фамилия", "Имя", "Отчество"))
+            for i in range(start, stop):
+                print(f"{i+1:<10}{table[i][1]:<20}{table[i][2]:<20}{table[i][3]:<20}")
+            if not flag:
+                print("---T-h-a-t---i-s---a-l-l---")
+                return
+            iter += 1
+            flag = False
+            while not flag:
+                print('Выберите опцию:', f'1. Вывести следующие {num} записей', '2. Выйти из постраничного просмотра',
+                      sep='\n')
+                try:
+                    p = int(input("=> "))
+                except:
+                    continue
                 else:
-                    stop = num * (iter + 1)
-
-                print(pd.DataFrame(table[start:stop],
-                                   columns=['id', 'first_name', 'second_name', 'last_name'],
-                                   index=[i + 1 for i in range(stop - start)]) \
-                      .drop(['id'], axis=1))
-                if not flag:
-                    print("---T-h-a-t---i-s---a-l-l---")
-                iter += 1
+                    if p == 2:
+                        return
+                    elif p != 1:
+                        continue
+                    flag = True
         return
     def show_add_person(self):
         # Не реализована проверка на максимальную длину строк. Нужно доделать самостоятельно!
