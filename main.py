@@ -138,14 +138,13 @@ class Main:
             iter += 1
             flag = False
             while not flag:
-                print('Выберите опцию:', f'1. Вывести следующие {num} записей', '2. Выйти из постраничного просмотра',
-                      sep='\n')
+                print('Выберите опцию:', f'1. Вывести следующие {num} записей (-1 - выход)', sep="\n")
                 try:
                     p = int(input("=> "))
                 except:
                     continue
                 else:
-                    if p == 2:
+                    if p == -1:
                         return
                     elif p != 1:
                         continue
