@@ -133,7 +133,7 @@ class Main:
             iter += 1
             flag = False
             while not flag:
-                print('Выберите опцию:', f'1. Вывести следующие {num} записей (-1 - выход)', sep="\n")
+                print('Выберите опцию:', "{}1 - вывести следующие {} записей (-1 - выход)".format("\t", num), sep="\n")
                 try:
                     p = int(input("=> "))
                 except:
