@@ -13,6 +13,9 @@ class DocsTable(DbTable):
                 "number": ["varchar(32)", "NOT NULL"],
                 "date": ["varchar(10)", "NOT NULL"]}
 
+    def primary_key(self):
+        return ['id']
+
     def all_by_person_id(self, pid):
         sql = "SELECT * FROM " + self.table_name()
         sql += " WHERE person_id = :id"
@@ -25,17 +28,8 @@ class DocsTable(DbTable):
     def check_docs(self, pid, cd):
         cur = self.dbconn.conn.cursor()
         cur.execute(f'SELECT id FROM {self.table_name()} WHERE person_id = :id', {'id': int(pid)})
-        # print("pid")
-        # print(pid)
         result = cur.fetchall()
-        # print("result")
-        # print(result)
-        # print("******")
         for i in result:
-            # print("i, cd")
-            # print(i, cd)
-            # print("cd, i[0]")
-            # print(cd, i[0])
             if str(cd) == str(i[0]):
                 return True
         return False
@@ -49,47 +43,31 @@ class DocsTable(DbTable):
     def delete_docs(self, cd):
         sql = "DELETE FROM " + self.table_name()
         sql += " WHERE id=" + self.primary_key()[0]
-        # print(sql)
         sql += " AND id=:tell"
-        # sql+= " IN DocsTable.docs"
         cur = self.dbconn.conn.cursor()
         cur.execute(sql, {"tell": str(cd)})
-        # {"offset": num - 1}
-        # print(sql)
         self.dbconn.conn.commit()
         return
 
-    def update_docs(self, cd, new_serial):
-        cur = self.dbconn.conn.cursor()
-        cur.execute(f"UPDATE {self.table_name()} SET serial=:new_serial WHERE id={self.primary_key()[0]} AND id=:cd", {'cd': str(cd), 'new_serial': str(new_serial)})
-        # print(cur.execute(f"UPDATE {self.table_name()} SET serial=:new_serial WHERE id={self.primary_key()[0]} AND id=:cd",{'cd': str(cd), 'new_serial': str(new_serial)}))
-        # print(self.primary_key())
-        # print(f"UPDATE {self.table_name()} SET id=:cd WHERE person_id={self.primary_key()[0]} AND id=:new_cd", {'cd': str(cd), 'new_cd': str(new_serial)})
-        self.dbconn.conn.commit()
-        return
     def find_by_id(self, num):
-        cur=self.dbconn.conn.cursor()
+        cur = self.dbconn.conn.cursor()
         cur.execute(f"SELECT * FROM {self.table_name()} WHERE id=:id", {'id': int(num)})
-        # print(f"SELECT * FROM {self.table_name()} WHERE id=:id", {'id': int(num)})
         return cur.fetchone()
-    def update_docs_2(self, pid, vals):
-        # vals=list(vals)
-        # vals=vals.append(int(pid))
+
+    def find_by_position(self, num, pid):
+        sql = "SELECT * FROM " + self.table_name() + " WHERE person_id=:pid "
+        sql += " ORDER BY "
+        sql += ", ".join(self.primary_key())  # join string split by ', ', '[aa, bb, ss] ex.: aa, bb, ss
+        sql += " LIMIT 1 OFFSET :offset"
+        cur = self.dbconn.conn.cursor()
+        cur.execute(sql, {"offset": num - 1, "pid": pid})
+        return cur.fetchone()
+
+    def update_docs(self, pid, vals):
         vals = tuple(vals)
-        # sql = "UPDATE " + self.table_name() + "("
-        # sql += ", ".join(self.column_names_without_id()) + ") VALUES( "
-        # sql += "?, " * len(vals)
-        # sql = sql.removesuffix(', ')
-        # sql += ')'
-        # print(vals, vals[0],vals[1],vals[2],vals[3])
-        # print(sql)
-        # print(self.column_names_without_id())
         cur = self.dbconn.conn.cursor()
         sql = "UPDATE " + self.table_name() + " SET type=:type, serial=:serial, number=:number, date=:date WHERE id=:id"
-        # print(sql)
-        # cur.execute(sql)
-        cur.execute(sql, {'type':str(vals[0]),'serial':str(vals[1]), 'number':str(vals[2]), 'date':str(vals[3]), 'id':int(pid)})
-        # print(sql)
+        cur.execute(sql, {'type': str(vals[0]), 'serial': str(vals[1]), 'number': str(vals[2]), 'date': str(vals[3]),
+                          'id': int(pid)})
         self.dbconn.conn.commit()
         return
-
